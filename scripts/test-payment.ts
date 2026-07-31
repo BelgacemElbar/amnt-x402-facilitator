@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { createClientHederaSigner, HBAR_ASSET_ID } from "@x402/hedera";
-import { parseHederaPrivateKey } from "../src/signer.js";
+import { parseHederaPrivateKey } from "../src/facilitator/signer.js";
 
 // End-to-end smoke test: builds a real signed HBAR payment and posts it
 // straight to this facilitator's /verify then /settle. Requires a second
