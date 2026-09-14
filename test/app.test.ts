@@ -107,3 +107,13 @@ test("helpers", () => {
   assert.equal(s.successRate, null);
   assert.equal(s.daily.length, 3);
 });
+
+test("mounts under a path, dashboard included", async () => {
+  const { app } = await setup();
+  const { Hono } = await import("hono");
+  const host = new Hono().route("/api/x402/facilitator", app);
+  assert.equal((await host.request("/api/x402/facilitator/supported")).status, 200);
+  // Root-relative fetches would read the host's /stats, not this instance's.
+  const html = await (await host.request("/api/x402/facilitator/dashboard")).text();
+  assert.doesNotMatch(html, /fetch\("\//);
+});

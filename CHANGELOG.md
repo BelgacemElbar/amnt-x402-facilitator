@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 — 2026-09-14
+
+### Fixed
+- **`/dashboard` works when the app is mounted under a path** (for example `new Hono().route("/api/x402/facilitator", app)`). It fetched `/stats`, `/health` and `/transactions` from the site root, so it read the host's routes instead of this instance's.
+
 ## 1.0.0 — 2026-09-14
 
 Renamed from `hedera-x402-facilitator`. GitHub redirects the old URL.

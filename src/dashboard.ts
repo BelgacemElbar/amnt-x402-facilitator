@@ -57,7 +57,7 @@ let cursor = null;
 
 async function load() {
   const env = $("env").value, days = $("days").value;
-  const s = await fetch("/stats?env=" + env + "&days=" + days).then((r) => r.json()).catch(() => null);
+  const s = await fetch("stats?env=" + env + "&days=" + days).then((r) => r.json()).catch(() => null);
   if (s) {
     $("t-count").textContent = s.settlements.toLocaleString();
     $("t-volume").textContent = usd(s.volumeAtomic);
@@ -66,7 +66,7 @@ async function load() {
     const max = Math.max(1, ...s.daily.map((d) => d.count));
     $("bars").innerHTML = s.daily.map((d) => '<div title="' + esc(d.day + ": " + d.count) + '" style="height:' + (d.count ? Math.max(4, (d.count / max) * 100) : 0) + '%"></div>').join("");
   }
-  const h = await fetch("/health").then((r) => r.json()).catch(() => null);
+  const h = await fetch("health").then((r) => r.json()).catch(() => null);
   const ok = h && h.status === "ok";
   $("status").innerHTML = '<span class="dot" style="background:var(--' + (ok ? "good" : "bad") + ')"></span>' + (ok ? "Operational" : h ? "Degraded: a fee payer is low" : "Unreachable");
   $("payers").innerHTML = (h?.chains || []).map((c) => esc(c.network) + " · " + esc(c.feePayer) + " · " + (c.balance == null ? "?" : c.balance.toFixed(4) + " " + esc(c.unit))).join("<br>") || "None";
@@ -79,7 +79,7 @@ async function more() {
   const q = new URLSearchParams({ env: $("env").value, limit: "25" });
   if ($("status-filter").value) q.set("status", $("status-filter").value);
   if (cursor) q.set("cursor", cursor);
-  const d = await fetch("/transactions?" + q).then((r) => r.json()).catch(() => ({ transactions: [] }));
+  const d = await fetch("transactions?" + q).then((r) => r.json()).catch(() => ({ transactions: [] }));
   $("txs").insertAdjacentHTML("beforeend", d.transactions.map((t) => "<tr><td>" + esc(new Date(t.created_at).toLocaleString()) + "</td><td>" + esc(t.network) + "</td><td>" + (t.amount_atomic ? usd(t.amount_atomic) : "-") + "</td><td>" + esc(t.resource_url || "-") + '</td><td><span class="pill ' + esc(t.status) + '">' + esc(t.status) + (t.error_reason ? " · " + esc(t.error_reason) : "") + "</span></td><td>" + (t.tx_id ? (t.explorer ? '<a href="' + esc(t.explorer) + '" target="_blank" rel="noopener">' + esc(t.tx_id) + "</a>" : esc(t.tx_id)) : "-") + "</td></tr>").join("") || (cursor ? "" : '<tr><td colspan="6" class="muted">No transactions yet.</td></tr>'));
   cursor = d.cursor;
   $("more").hidden = !cursor;

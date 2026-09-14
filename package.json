@@ -1,6 +1,6 @@
 {
   "name": "amnt-x402-facilitator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An open-source x402 payment facilitator for Hedera, EVM chains and Solana: verify, settle, log, discovery list and a dashboard.",
   "license": "MIT",
   "type": "module",
