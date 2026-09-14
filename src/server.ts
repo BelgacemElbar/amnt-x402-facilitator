@@ -2,10 +2,9 @@ import "dotenv/config";
 import { serve } from "@hono/node-server";
 import { createApp } from "./app.js";
 
-const PORT = Number(process.env.PORT || 4021);
+const port = Number(process.env.PORT || 3000);
+const app = await createApp();
 
-const app = createApp();
-
-serve({ fetch: app.fetch, port: PORT }, (info) => {
-  console.log(`hedera-x402-facilitator listening on http://localhost:${info.port}`);
+serve({ fetch: app.fetch, port }, (info) => {
+  console.log(`amnt-x402-facilitator listening on http://localhost:${info.port} (dashboard at /dashboard)`);
 });

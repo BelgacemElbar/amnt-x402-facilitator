@@ -1,28 +1,39 @@
 {
-  "name": "hedera-x402-facilitator",
-  "version": "0.1.0",
-  "description": "A minimal, self-hostable x402 payment facilitator for Hedera — verify and settle HBAR/HTS payments for any x402 resource server, on testnet or mainnet.",
+  "name": "amnt-x402-facilitator",
+  "version": "1.0.0",
+  "description": "An open-source x402 payment facilitator for Hedera, EVM chains and Solana: verify, settle, log, discovery list and a dashboard.",
   "license": "MIT",
-  "private": false,
   "type": "module",
+  "repository": { "type": "git", "url": "git+https://github.com/BelgacemElbar/amnt-x402-facilitator.git" },
+  "homepage": "https://www.amnt.io/facilitators/hedera-x402-facilitator",
+  "keywords": ["x402", "facilitator", "hedera", "base", "solana", "usdc", "payments"],
+  "bin": { "amnt-x402-facilitator": "bin/amnt-x402-facilitator.mjs" },
+  "exports": { ".": "./src/app.ts" },
+  "files": ["src", "bin", "README.md", "LICENSE", ".env.example"],
+  "engines": { "node": ">=22.13" },
   "scripts": {
+    "start": "node bin/amnt-x402-facilitator.mjs",
     "dev": "tsx watch src/server.ts",
-    "start": "tsx src/server.ts",
     "typecheck": "tsc --noEmit",
-    "test:payment": "tsx scripts/test-payment.ts"
+    "test": "node --import tsx --test test/*.test.ts",
+    "e2e:testnet": "tsx scripts/e2e-testnet.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.0",
-    "@x402/core": "2.19.0",
-    "@x402/fetch": "2.19.0",
-    "@x402/hedera": "2.19.0",
-    "@x402/hono": "^2.19.0",
+    "@solana/kit": "^5.5.1",
+    "@x402/core": "^2.21.0",
+    "@x402/evm": "^2.24.0",
+    "@x402/hedera": "^2.21.0",
+    "@x402/svm": "^2.21.0",
     "dotenv": "^16.4.0",
-    "hono": "^4.12.0"
+    "hono": "^4.13.1",
+    "pg": "^8.23.0",
+    "tsx": "^4.23.0",
+    "viem": "^2.55.0"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "tsx": "^4.19.0",
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.11.0",
     "typescript": "^5.6.0"
   }
 }

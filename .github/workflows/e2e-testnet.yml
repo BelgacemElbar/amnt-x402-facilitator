@@ -1,0 +1,24 @@
+name: Testnet end-to-end
+# Pays and settles 0.001 testnet USDC on each testnet, once a day.
+# Chains without a buyer secret are skipped.
+on:
+  schedule:
+    - cron: "40 6 * * *"
+  workflow_dispatch:
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run e2e:testnet
+        env:
+          E2E_FACILITATOR_URL: ${{ vars.E2E_FACILITATOR_URL }}
+          E2E_EVM_BUYER_KEY: ${{ secrets.E2E_EVM_BUYER_KEY }}
+          E2E_SOLANA_BUYER_KEY: ${{ secrets.E2E_SOLANA_BUYER_KEY }}
+          E2E_HEDERA_BUYER_ID: ${{ vars.E2E_HEDERA_BUYER_ID }}
+          E2E_HEDERA_BUYER_KEY: ${{ secrets.E2E_HEDERA_BUYER_KEY }}

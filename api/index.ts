@@ -1,17 +1,24 @@
-import "dotenv/config";
 import { createApp } from "../src/app.js";
 
 export const config = { runtime: "nodejs" };
 
-const app = createApp();
+// Built once per instance. A failed build is not cached, so fixing an env var
+// takes effect on the next request instead of whenever the instance recycles.
+let appPromise: ReturnType<typeof createApp> | null = null;
 
-// Vercel's Node runtime now expects a Web-standard fetch handler per HTTP
-// method rather than the legacy (req, res) => void signature that
-// hono/vercel's handle() wraps — app.fetch already has that exact shape.
-export const GET = app.fetch;
-export const POST = app.fetch;
-export const PUT = app.fetch;
-export const PATCH = app.fetch;
-export const DELETE = app.fetch;
-export const HEAD = app.fetch;
-export const OPTIONS = app.fetch;
+async function handler(req: Request) {
+  appPromise ??= createApp().catch((err) => {
+    appPromise = null;
+    throw err;
+  });
+  try {
+    return (await appPromise).fetch(req);
+  } catch (err: any) {
+    // Answer, never throw: an empty 500 from /supported makes x402 resource
+    // servers refuse to start at all.
+    return Response.json({ error: "Facilitator unavailable", message: err?.message || "Not configured." }, { status: 503 });
+  }
+}
+
+export const GET = handler;
+export const POST = handler;
